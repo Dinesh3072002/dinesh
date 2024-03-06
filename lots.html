@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="EventCalendarApp">
+<head>
+  <meta charset="UTF-8">
+  <title>Responsive Event Calendar</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    .calendar {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .calendar-header h2 {
+      margin: 0;
+    }
+    .calendar-header button {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    .calendar-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .calendar-table th,
+    .calendar-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .calendar-table th {
+      background-color: #007bff;
+      color: #fff;
+    }
+    .calendar-table td {
+      background-color: #f9f9f9;
+    }
+    @media(max-width: 600px) {
+      .calendar {
+        padding: 10px;
+      }
+      .calendar-table th,
+      .calendar-table td {
+        padding: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="calendar" ng-controller="EventCalendarController">
+    <div class="calendar-header">
+      <h2>Event Calendar</h2>
+      <button ng-click="previousMonth()">Previous</button>
+      <button ng-click="nextMonth()">Next</button>
+    </div>
+    <table class="calendar-table">
+      <thead>
+        <tr>
+          <th ng-repeat="day in days">{{ day }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="week in weeks">
+          <td ng-repeat="day in week" ng-class="{ 'today': day.date === today }">{{ day.date }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    angular.module('EventCalendarApp', [])
+      .controller('EventCalendarController', ['$scope', function($scope) {
+        var date = new Date();
+        var month = date.getMonth();
+        var year = date.getFullYear();
+
+        $scope.days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        $scope.weeks = [];
+        $scope.today = new Date().getDate();
+
+        $scope.generateCalendar = function(month, year) {
+          var firstDay = new Date(year, month, 1).getDay();
+          var daysInMonth = new Date(year, month + 1, 0).getDate();
+          var weeks = [];
+          var dayIndex = 1;
+
+          for (var i = 0; i < 6; i++) {
+            var week = [];
+            for (var j = 0; j < 7; j++) {
+              if (i === 0 && j < firstDay) {
+                week.push({ date: '' });
+              } else if (dayIndex > daysInMonth) {
+                break;
+              } else {
+                week.push({ date: dayIndex });
+                dayIndex++;
+              }
+            }
+            weeks.push(week);
+          }
+
+          $scope.weeks = weeks;
+        };
+
+        $scope.generateCalendar(month, year);
+
+        $scope.previousMonth = function() {
+          if (month === 0) {
+            month = 11;
+            year--;
+          } else {
+            month--;
+          }
+          $scope.generateCalendar(month, year);
+        };
+
+        $scope.nextMonth = function() {
+          if (month === 11) {
+            month = 0;
+            year++;
+          } else {
+            month++;
+          }
+          $scope.generateCalendar(month, year);
+        };
+      }]);
+  </script>
+</body>
+</html>

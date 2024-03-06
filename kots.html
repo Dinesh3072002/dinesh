@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="QuizApp">
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Quiz Application</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: skyblue;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .quiz-container {
+      background-color: lightgreen;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    .options {
+      list-style-type: none;
+      padding: 0;
+    }
+    .options li {
+      margin-bottom: 10px;
+    }
+    .result {
+      text-align: center;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container" ng-controller="QuizController">
+    <h1>Interactive Quiz Application</h1>
+    <div ng-show="!quizCompleted">
+      <div class="question">{{ currentQuestion.question }}</div>
+      <ul class="options">
+        <li ng-repeat="option in currentQuestion.options" ng-click="selectOption(option)">
+          {{ option }}
+        </li>
+      </ul>
+      <button ng-click="nextQuestion()" ng-show="selectedOption">Next</button>
+    </div>
+    <div class="result" ng-show="quizCompleted">
+      Your score: {{ score }} / {{ questions.length }}
+    </div>
+  </div>
+
+  <script>
+    angular.module('QuizApp', [])
+      .controller('QuizController', ['$scope', function($scope) {
+        $scope.questions = [
+          {
+            question: 'What is the capital of France?',
+            options: ['Paris', 'London', 'Berlin', 'Rome'],
+            correctAnswer: 'Paris'
+          },
+          {
+            question: 'Which planet is known as the Red Planet?',
+            options: ['Mars', 'Venus', 'Jupiter', 'Saturn'],
+            correctAnswer: 'Mars'
+          },
+          {
+            question: 'Who wrote "To Kill a Mockingbird"?',
+            options: ['Harper Lee', 'Mark Twain', 'J.K. Rowling', 'Stephen King'],
+            correctAnswer: 'Harper Lee'
+          }
+        ];
+        $scope.currentQuestionIndex = 0;
+        $scope.currentQuestion = $scope.questions[$scope.currentQuestionIndex];
+        $scope.selectedOption = null;
+        $scope.score = 0;
+        $scope.quizCompleted = false;
+
+        $scope.nextQuestion = function() {
+          if ($scope.currentQuestionIndex < $scope.questions.length - 1) {
+            $scope.currentQuestionIndex++;
+            $scope.currentQuestion = $scope.questions[$scope.currentQuestionIndex];
+            $scope.selectedOption = null;
+          } else {
+            $scope.quizCompleted = true;
+          }
+        };
+
+        $scope.selectOption = function(option) {
+          $scope.selectedOption = option;
+          if (option === $scope.currentQuestion.correctAnswer) {
+            $scope.score++;
+          }
+        };
+      }]);
+  </script>
+</body>
+</html>

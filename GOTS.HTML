@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="ChatApp">
+<head>
+  <meta charset="UTF-8">
+  <title>Colorful and Unique Chat Application</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      background-color: #f0f8ff;
+      margin: 0;
+      padding: 20px;
+    }
+    .chat-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #fff;
+      border-radius: 20px;
+      padding: 20px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+    .messages {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      overflow-y: auto;
+      max-height: 400px;
+    }
+    .message {
+      margin-bottom: 10px;
+    }
+    .message .username {
+      font-weight: bold;
+      color: #ff5733;
+    }
+    .message .content {
+      background-color: #f9e79f;
+      padding: 10px;
+      border-radius: 20px;
+      display: inline-block;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+    .message.from-me .content {
+      background-color: #c7ecee;
+      color: #2c3e50;
+    }
+    .message.from-me {
+      text-align: right;
+    }
+    .input-container {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+    }
+    .input-container input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border-radius: 20px;
+      border: none;
+      background-color: #f9e79f;
+      margin-right: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+    .input-container button {
+      background-color: #ff5733;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .input-container button:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container" ng-controller="ChatController">
+    <ul class="messages">
+      <li class="message" ng-repeat="message in messages" ng-class="{ 'from-me': message.fromMe }">
+        <span class="username">{{ message.username }}:</span>
+        <span class="content">{{ message.content }}</span>
+      </li>
+    </ul>
+    <div class="input-container">
+      <input type="text" ng-model="newMessage" placeholder="Type your message...">
+      <button ng-click="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    angular.module('ChatApp', [])
+      .controller('ChatController', ['$scope', function($scope) {
+        $scope.messages = [];
+        $scope.newMessage = '';
+        $scope.username = 'BOT' + Math.floor(Math.random() * 1000); // Generate a random username
+
+        // Simulated function to receive messages from the server
+        function receiveMessage(message) {
+          $scope.$apply(function() {
+            $scope.messages.push(message);
+          });
+        }
+
+        // Simulated function to send message to the server
+        function sendMessageToServer(message) {
+          // In a real application, you would send the message to the server
+          // Here, we just simulate receiving the message back after a delay
+          setTimeout(function() {
+            receiveMessage({
+              username: $scope.username,
+              content: message.content,
+              fromMe: true // Indicate that this message is sent by the current user
+            });
+          }, 500);
+        }
+
+        $scope.sendMessage = function() {
+          if ($scope.newMessage.trim() !== '') {
+            var message = {
+              username: $scope.username,
+              content: $scope.newMessage
+            };
+            $scope.messages.push(message);
+            sendMessageToServer(message);
+            $scope.newMessage = '';
+          }
+        };
+      }]);
+  </script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="AuthApp">
+<head>
+  <meta charset="UTF-8">
+  <title>User Authentication System</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: skyblue;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .auth-container {
+      background-color:greenyellow;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .form-group button {
+      background-color: green;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container" ng-controller="AuthController">
+    <h1>User Authentication System</h1>
+    <div ng-show="!isLoggedIn">
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input type="text" id="username" ng-model="username">
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" ng-model="password">
+      </div>
+      <button ng-click="login()">Login</button>
+      <p ng-show="loginError" style="color: red;">Invalid username or password.</p>
+      <hr>
+      <p>New user? <a href="#" ng-click="showSignupForm()">Sign up here</a>.</p>
+    </div>
+    <div ng-show="showSignup">
+      <div class="form-group">
+        <label for="newUsername">New Username:</label>
+        <input type="text" id="newUsername" ng-model="newUsername">
+      </div>
+      <div class="form-group">
+        <label for="newPassword">New Password:</label>
+        <input type="password" id="newPassword" ng-model="newPassword">
+      </div>
+      <button ng-click="signup()">Sign Up</button>
+      <hr>
+      <p>Already have an account? <a href="#" ng-click="showLoginForm()">Login here</a>.</p>
+    </div>
+    <div ng-show="isLoggedIn">
+      <p>Welcome, {{username}}!</p>
+      <button ng-click="logout()">Logout</button>
+    </div>
+  </div>
+
+  <script>
+    angular.module('AuthApp', [])
+      .controller('AuthController', ['$scope', function($scope) {
+        $scope.isLoggedIn = false;
+        $scope.showSignup = false;
+        $scope.loginError = false;
+        $scope.username = '';
+        $scope.password = '';
+        $scope.newUsername = '';
+        $scope.newPassword = '';
+
+        $scope.login = function() {
+          // Simulated login process, replace with actual authentication logic
+          if ($scope.username === 'user' && $scope.password === 'password') {
+            $scope.isLoggedIn = true;
+            $scope.loginError = false;
+          } else {
+            $scope.loginError = true;
+          }
+        };
+
+        $scope.signup = function() {
+          // Simulated signup process, replace with actual user registration logic
+          // For simplicity, just set isLoggedIn to true after signup
+          $scope.username = $scope.newUsername;
+          $scope.password = $scope.newPassword;
+          $scope.isLoggedIn = true;
+          $scope.showSignup = false;
+        };
+
+        $scope.logout = function() {
+          $scope.isLoggedIn = false;
+          $scope.username = '';
+          $scope.password = '';
+        };
+
+        $scope.showSignupForm = function() {
+          $scope.showSignup = true;
+        };
+
+        $scope.showLoginForm = function() {
+          $scope.showSignup = false;
+        };
+      }]);
+  </script>
+</body>
+</html>

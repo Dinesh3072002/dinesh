@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="taskListApp">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Task List Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: skyblue;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 20px;
+      border-radius: 5px;
+      background-color: springgreen;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: steelblue;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .task-input {
+      width: 70%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px 0 0 5px;
+    }
+
+    .add-btn {
+      padding: 10px 20px;
+      background-color: orangered;
+      color:whitesmoke;
+      border: none;
+      border-radius: 0 5px 5px 0;
+      cursor: pointer;
+    }
+
+    .task-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .task-text {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .delete-btn {
+      padding: 8px 15px;
+      background-color: darkred;
+      color: mediumvioletred;
+      border: none;
+      border-radius: 5px;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+
+    .delete-btn:hover {
+      background-color: orangered;
+    }
+  </style>
+</head>
+<body ng-controller="TaskListController" style="text-align: center;">
+  <div class="container">
+    <h1>Task List Manager</h1>
+    <div class="input-group">
+      <input type="text" ng-model="newTask" placeholder="Add new task..." class="task-input">
+      <button ng-click="addTask()" class="add-btn">Add Task</button>
+    </div>
+    <ul class="task-list">
+      <li ng-repeat="task in tasks" class="task-item">
+        <input type="text" ng-model="task.name" ng-blur="updateTask(task)" class="task-text">
+        <button ng-click="deleteTask(task)" class="delete-btn">Delete</button>
+      </li>
+    </ul>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script>
+    angular.module('taskListApp', [])
+      .controller('TaskListController', function($scope) {
+        $scope.tasks = [];
+
+        $scope.addTask = function() {
+          if ($scope.newTask.trim() !== '') {
+            $scope.tasks.push({ name: $scope.newTask });
+            $scope.newTask = '';
+          }
+        };
+
+        $scope.deleteTask = function(task) {
+          var index = $scope.tasks.indexOf(task);
+          if (index !== -1) {
+            $scope.tasks.splice(index, 1);
+          }
+        };
+
+        $scope.updateTask = function(task) {
+          if (task.name.trim() === '') {
+            $scope.deleteTask(task);
+          }
+        };
+      });
+  </script>
+</body>
+</html>
